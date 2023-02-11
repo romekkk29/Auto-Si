@@ -15,10 +15,10 @@ function App() {
       
     <BrowserRouter>
     <Routes>
-              <Route path="/auto" element={<Home></Home>}/>
+              <Route path="/" element={<Home></Home>}/>
               <Route path="/iniciar-sesion" element={<Login/>}/>
               <Route path="/prueba" element={<CalendarAutoSi></CalendarAutoSi>}/>
-              <Route path="*" element={<Navigate to='/iniciar-sesion'></Navigate>}/>
+              <Route path="*" element={<Navigate to='/'></Navigate>}/>
 
     </Routes>
   </BrowserRouter>
