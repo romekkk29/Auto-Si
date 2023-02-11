@@ -7,13 +7,13 @@ import Clientes from '../componentes/clientes/Clientes';
 import ClientesAdmin from '../componentes/clientesAdmin/ClientesAdmin';
 import Estadisticas from '../componentes/estadisticas/Estadisticas';
 import Notificaciones from '../componentes/notificaciones/Notificaciones';
-import { useSelector } from 'react-redux/es/exports';
+import { useSelector, useDispatch } from 'react-redux/es/exports';
 import { Navigate, useNavigate} from 'react-router-dom';
 import Colaboradores from '../componentes/colaboradores/Colaboradores';
 import Formularios from '../componentes/formulario/Formularios';
 import { Url } from './../util/rutas';
 import { fetchUtil } from './../util/fetchUtil';
-
+import {initialS  } from '../store/slices/loginSlice';
 //STYLES BUTTON
 
 const StyledContainer=styled.div`
@@ -36,11 +36,13 @@ export default function Home(){
     const [textHeaderHome,setTextHeaderHome]=useState("Estadísticas")
     const [whereHere,setWhereHere]=useState("estadistica")
     const stateLogin= useSelector(stateLogin=>stateLogin)
+    const dispatch= useDispatch()
     const [clientes,setClientes]=useState()
     const [data, setData]=useState([])
     const [contratos,setContratos]=useState()
     let url=Url('events/eventTime')
     let url22=Url('client')
+    useEffect(()=>{dispatch(initialS())},[])
     if(stateLogin.login.user.token==="UNLOGED"||stateLogin.login.user.token==="ERROR"){
         return <Navigate to='/iniciar-sesion'></Navigate>
     }

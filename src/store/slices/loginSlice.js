@@ -1,7 +1,7 @@
 import { createSlice,createAsyncThunk } from "@reduxjs/toolkit";
 import {Url} from '../../util/rutas'
 const URL_LOGIN=Url('auth/signin')
-
+const initialAuth = JSON.parse(sessionStorage.getItem('authAutoSi')) || null;
 export const get_login= createAsyncThunk('posts/get_login',async(user)=>{
     try{
         const response= await fetch(URL_LOGIN,{
@@ -22,17 +22,25 @@ export const loginSlice=createSlice({
     name:'login',
     initialState:{
         user:{
-            vendors:null,
-            token:'UNLOGED'
+            vendors:initialAuth?initialAuth.vendors : null,
+            token: initialAuth?initialAuth.token : 'UNLOGED'
         },
         loading:false
     },
     reducers:
     {
         logOut:(state,action)=>{
+            
                state.user.token='UNLOGED'
-
-        } }
+               sessionStorage.removeItem('authAutoSi');
+        },
+        initialS:(state,action)=>{
+            const initialAuth = JSON.parse(sessionStorage.getItem('authAutoSi')) || null;
+            state.user.token=initialAuth?initialAuth.token : 'UNLOGED';
+            state.user.vendors=initialAuth?initialAuth.vendors : null;
+           
+     }
+     }
     ,
     extraReducers:{
         [get_login.pending]: (state)=>{
@@ -41,11 +49,13 @@ export const loginSlice=createSlice({
         },
         [get_login.fulfilled]: (state,{payload})=>{
             if(payload.vendors){
+                    sessionStorage.setItem('authAutoSi', JSON.stringify(payload))
                      state.user.vendors=payload.vendors;
                      state.user.token=payload.token;
             }else{
                 state.user.vendors=null;
                 state.user.token='ERROR';
+                sessionStorage.removeItem('authAutoSi');
             }
      
             state.loading=false;
@@ -56,6 +66,6 @@ export const loginSlice=createSlice({
     }
 
 })
-export const {logOut}=loginSlice.actions
+export const {logOut,initialS}=loginSlice.actions
 
 export default loginSlice.reducer
